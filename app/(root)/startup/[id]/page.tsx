@@ -4,8 +4,10 @@ import { STARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 import markdownIt from "markdown-it";
+import { Skeleton } from "@/components/ui/skeleton";
+import View from "@/components/view";
 
 const md = new markdownIt();
 
@@ -69,6 +71,12 @@ const StartupPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           )}
         </div>
         <hr className="divider" />
+
+        {/*TODO: EDITOR SELECTED STARTUPS */}
+
+        <Suspense fallback={<Skeleton className="view_skeleton" />}>
+          <View id={id} />
+        </Suspense>
       </section>
     </>
   );
