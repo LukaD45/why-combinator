@@ -6,19 +6,52 @@ import { Textarea } from "./ui/textarea";
 import MDEditor from "@uiw/react-md-editor";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
+import { formSchema } from "@/lib/validation";
+import { z } from "zod";
 
 const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pitch, setPitch] = useState("");
 
+  const handleFormSubmit = async (prevState: any, formData: FormData) => {
+    try {
+      const formValues = {
+        title: formData.get("title") as string,
+        description: formData.get("description") as string,
+        category: formData.get("category") as string,
+        link: formData.get("link") as string,
+        pitch,
+      };
+
+      await formSchema.parseAsync(formValues);
+      console.log(formValues);
+
+      //const resulst=await createIdea(formValues)
+
+      //console.log(result);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors = error.flatten().fieldErrors;
+
+        setErrors(fieldErrors as unknown as Record<string, string>);
+
+        return { ...prevState, error: "Validation failed", status: "ERROR" };
+      }
+      return {
+        prevState,
+        error: "Unexpected error has occurred",
+        status: "SUCCESS",
+      };
+    }
+  };
+
   const [state, formAction, isPending] = useActionState(handleFormSubmit, {
     error: "",
-    status: "INITIAL",
+    status: "INITIAL  ",
   });
 
-  const handleFormSubmit = () => {};
   return (
-    <form action={() => {}} className="startup-form">
+    <form action={formAction} className="startup-form">
       <div>
         <label htmlFor="title" className="startup-form_label">
           Title
@@ -28,11 +61,12 @@ const StartupForm = () => {
           name="title"
           className="startup-form_input"
           required
-          placeholder="Startup title"
+          placeholder="Startup Title"
         />
 
         {errors.title && <p className="startup-form_error">{errors.title}</p>}
       </div>
+
       <div>
         <label htmlFor="description" className="startup-form_label">
           Description
@@ -42,13 +76,14 @@ const StartupForm = () => {
           name="description"
           className="startup-form_textarea"
           required
-          placeholder="Startup description"
+          placeholder="Startup Description"
         />
 
         {errors.description && (
           <p className="startup-form_error">{errors.description}</p>
         )}
       </div>
+
       <div>
         <label htmlFor="category" className="startup-form_label">
           Category
@@ -58,13 +93,14 @@ const StartupForm = () => {
           name="category"
           className="startup-form_input"
           required
-          placeholder="Startup category (eg. Tech, Health, etc.)"
+          placeholder="Startup Category (Tech, Health, Education...)"
         />
 
         {errors.category && (
           <p className="startup-form_error">{errors.category}</p>
         )}
       </div>
+
       <div>
         <label htmlFor="link" className="startup-form_label">
           Image URL
@@ -74,15 +110,17 @@ const StartupForm = () => {
           name="link"
           className="startup-form_input"
           required
-          placeholder="Startup image URL"
+          placeholder="Startup Image URL"
         />
 
         {errors.link && <p className="startup-form_error">{errors.link}</p>}
       </div>
+
       <div data-color-mode="light">
         <label htmlFor="pitch" className="startup-form_label">
           Pitch
         </label>
+
         <MDEditor
           value={pitch}
           onChange={(value) => setPitch(value as string)}
@@ -94,21 +132,21 @@ const StartupForm = () => {
             placeholder:
               "Briefly describe your idea and what problem it solves",
           }}
-          previewOptions={{ disallowedElements: ["style"] }}
+          previewOptions={{
+            disallowedElements: ["style"],
+          }}
         />
 
         {errors.pitch && <p className="startup-form_error">{errors.pitch}</p>}
       </div>
+
       <Button
         type="submit"
         className="startup-form_btn text-white"
         disabled={isPending}
       >
-        {isPending ? "Submitting..." : "Submit your Pitch"}
-        <Send
-          className="size-6 ml-2 
-        "
-        />
+        {isPending ? "Submitting..." : "Submit Your Pitch"}
+        <Send className="size-6 ml-2" />
       </Button>
     </form>
   );
