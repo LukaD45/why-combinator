@@ -11,12 +11,12 @@ const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pitch, setPitch] = useState("");
 
-  const [state, formAction, isPending] = useActionState(
-    handleFormSsubmit,
-    error:"", status:"INITIAL"
-  );
+  const [state, formAction, isPending] = useActionState(handleFormSubmit, {
+    error: "",
+    status: "INITIAL",
+  });
 
-  const handleFormSsubmit = () => {};
+  const handleFormSubmit = () => {};
   return (
     <form action={() => {}} className="startup-form">
       <div>
