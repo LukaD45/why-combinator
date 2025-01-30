@@ -40,9 +40,8 @@ const StartupForm = () => {
           description: "Your startup pitch has been submitted successfully",
         });
         router.push(`/startup/${result.id}`);
-      }*/
+        }return result;       */
       }
-      return result;
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
@@ -65,8 +64,8 @@ const StartupForm = () => {
 
       return {
         prevState,
-        error: "Unexpected error has occurred",
-        status: "SUCCESS",
+        error: "An Unexpected error has occurred",
+        status: "ERROR",
       };
     }
   };
