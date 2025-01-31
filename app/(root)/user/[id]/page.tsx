@@ -1,5 +1,8 @@
 import { auth } from "@/auth";
+import { StartupCardSkeleton } from "@/components/startup-card";
+import { Skeleton } from "@/components/ui/skeleton";
 import UserStartups from "@/components/user-startups";
+import { cn } from "@/lib/utils";
 
 import { client } from "@/sanity/lib/client";
 import { AUTHOR_BY_ID_QUERY } from "@/sanity/lib/queries";
@@ -43,7 +46,7 @@ const UserPage = async ({ params }: { params: Promise<{ id: string }> }) => {
             {session?.id === id ? "Your" : "All"}Startups
           </p>
           <ul className="card_grid-sm">
-            <Suspense fallback={<p>Loading...</p>}>
+            <Suspense fallback={<StartupCardSkeleton />}>
               <UserStartups id={id} />
             </Suspense>
           </ul>
